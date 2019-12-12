@@ -46,6 +46,30 @@ while (program[cursor] && cursor !== -1) {
 
             cursor += 2;
             break;
+        case 5:
+            if (paramValue1 !== 0) {
+                cursor = paramValue2;
+            } else {
+                cursor += 3;
+            }
+            break;
+        case 6:
+            if (paramValue1 === 0) {
+                cursor = paramValue2;
+            } else {
+                cursor += 3;
+            }
+            break;
+        case 7:
+            program[param3] = paramValue1 < paramValue2 ? 1 : 0;
+
+            cursor += 4;
+            break;
+        case 8:
+            program[param3] = paramValue1 === paramValue2 ? 1 : 0;
+
+            cursor += 4;
+            break;
         case 99:
             console.log('Opcode 99');
             cursor = -1;
