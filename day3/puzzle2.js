@@ -52,21 +52,14 @@ const computePositions = wire => {
     return positions;
 };
 
-let result;
-let lim = 500;
+const wire1Positions = computePositions(wire1).map(co => co.join(','));
+const wire2Positions = computePositions(wire2).map(co => co.join(','));
 
-while (!result) {
-    const wire1Positions = computePositions(wire1).filter(([x, y]) => Math.abs(x) + Math.abs(y) < lim).map(co => co.join(','));
-    const wire2Positions = computePositions(wire2).filter(([x, y]) => Math.abs(x) + Math.abs(y) < lim).map(co => co.join(','));
+const intersection = wire1Positions
+    .find(value => wire2Positions.includes(value) && value !== '0,0');
 
-    const intersections = wire1Positions
-        .filter(value => wire2Positions.includes(value))
-        .map(co => co.split(','))
-        .map(([x, y]) => Math.abs(x) + Math.abs(y))
-        .sort((a, b) => a - b);
+const steps1 = wire1Positions.indexOf(intersection);
+const steps2 = wire2Positions.indexOf(intersection);
+const sumSteps = steps1 + steps2;
 
-    result = intersections[1];
-    lim *= 2;
-}
-
-console.log(result);
+console.log(sumSteps);
