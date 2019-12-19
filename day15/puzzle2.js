@@ -6,7 +6,7 @@ const program = data.split(',').map(value => parseInt(value, 10));
 
 // Works only with 1 possible path. If multiples paths, do a BFS (risks -> go round)
 
-const displayGrid = (grid, history) => {
+const displayGrid = grid => {
     const coordinates = Object.keys(grid).map(strCoordinates => strCoordinates.split(','));
     const coordinatesX = coordinates.map(arrCoordinates => arrCoordinates[0]);
     const coordinatesY = coordinates.map(arrCoordinates => arrCoordinates[1]);
@@ -23,10 +23,8 @@ const displayGrid = (grid, history) => {
             tile = grid[`${cursorX},${cursorY}`];
             if (tile && tile === -1) {
                 process.stdout.write('#');
-            } else if (tile && (tile === 'D' || tile === 'E')) {
+            } else if (tile && tile === 'O') {
                 process.stdout.write(tile);
-            } else if (tile && history.indexOf(`${cursorX},${cursorY}`) > -1) {
-                process.stdout.write('.');
             } else {
                 process.stdout.write(' ');
             }
@@ -46,6 +44,38 @@ const nextCoordsByDirection = (coords, direction) => {
     
     return arrayCoords.join(',');
 };
+
+const expandOxygen = (coordsList, grid, minutes) => {
+    const nextCoords = [];
+
+    coordsList.forEach(coords => {
+        for (let i = 1; i <= 4; i++) {
+            if (grid[nextCoordsByDirection(coords, i)] !== -1 && grid[nextCoordsByDirection(coords, i)] !== 'O') {
+                grid[nextCoordsByDirection(coords, i)] = 'O';
+                nextCoords.push(nextCoordsByDirection(coords, i));
+            }
+        }
+    });
+
+    if (nextCoords.length === 0) {
+        return minutes;
+    }
+
+    minutes++;
+
+    return expandOxygen(nextCoords, grid, minutes);
+};
+
+const isMapComplete = grid =>
+    !!grid['0,0'] && Object.entries(grid)
+        .map(([coords, value]) => {
+            if (value === -1) {
+                return true;
+            }
+
+            return !!grid[nextCoordsByDirection(coords, 1)] && !!grid[nextCoordsByDirection(coords, 2)] && !!grid[nextCoordsByDirection(coords, 3)] && !!grid[nextCoordsByDirection(coords, 4)];
+        })
+        .reduce((a, b) => a && b, true);
 
 const chooseNextInput = (botCoords, grid) => {
     let lastWeight = Infinity;
@@ -104,12 +134,11 @@ const generateOutputByMode = (type, input, mode, relativeBase, program) => {
 
 let cursor = 0;
 let relativeBase = 0;
-let lastInput, nextCoords, foundCoords;
+let lastInput, nextCoords, found, foundCoords;
 let botCoords = '0,0';
 let grid = {};
-let history = ['0,0'];
 
-while (!foundCoords && program[cursor] && cursor !== -1) {
+while (!isMapComplete(grid) && program[cursor] && cursor !== -1) {
     const mode = program[cursor].toString().padStart(5, '0');
     const opcode = parseInt(mode.substring(3), 10);
 
@@ -154,12 +183,6 @@ while (!foundCoords && program[cursor] && cursor !== -1) {
             paramValue1 = generateOutputByMode('read', param1, paramMode1, relativeBase, program);
 
             ({ grid, nextCoords, found, botCoords } = processOutput(lastInput, botCoords, parseInt(paramValue1, 10), grid));
-
-            if (history.indexOf(botCoords) === -1) {
-                history.push(botCoords);
-            } else {
-                history = history.slice(0, history.indexOf(botCoords) + 1);
-            }
 
             if (found) {
                 foundCoords = nextCoords;
@@ -222,7 +245,5 @@ while (!foundCoords && program[cursor] && cursor !== -1) {
     }
 }
 
-grid['0,0'] = 'D';
-grid[foundCoords] = 'E';
-displayGrid(grid, history);
-console.log('moves', history.length - 1);
+grid[foundCoords] = 'O';
+console.log(expandOxygen([foundCoords], grid, 0));
