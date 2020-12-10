@@ -21,7 +21,7 @@ const findRangeStartingAtIndex = (numbers, index, sumToFind) => {
 
 const findValidRange = (numbers, sumToFind) => {
   for (const [index, number] of numbers.entries()) {
-    if (number > firstInvalidNumber) continue;
+    if (number > sumToFind) continue;
 
     const result = findRangeStartingAtIndex(numbers, index, sumToFind);
 
