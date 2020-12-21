@@ -6,13 +6,13 @@ const data = readFileSync("puzzle.data", { encoding: "utf-8" });
 const computeCombinations = (grid) => {
   const gridsCombinations = [];
 
-  let gridToRotate = grid.slice();
-  let mirroredGridToRotate = flip(grid.slice());
+  let gridToRotate = grid;
+  let mirroredGridToRotate = flip(grid);
 
   for (let rotate = 0; rotate < 4; rotate += 1) {
     for (let iteration = 0; iteration < rotate; iteration += 1) {
-      gridToRotate = clockWiseRotate(gridToRotate).slice();
-      mirroredGridToRotate = clockWiseRotate(mirroredGridToRotate).slice();
+      gridToRotate = clockWiseRotate(gridToRotate);
+      mirroredGridToRotate = clockWiseRotate(mirroredGridToRotate);
     }
 
     gridsCombinations.push(gridToRotate);
