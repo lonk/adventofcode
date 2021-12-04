@@ -40,26 +40,41 @@ const computeUnmarkedNumbersSum = (winningCombinations, drawnNumbers) => {
   );
 };
 
-const boardsWinningCombinations = values
+let boardsWinningCombinations = values
   .slice(1)
   .map(computeBoardWinningCombinations);
 
 const drawnNumbers = new Set();
+let lastWinningBoard;
+let lastWinningDrawnNumbers;
+let lastWinningDrawnNumber;
 
 for (const drawnNumber of numbersToDraw) {
   drawnNumbers.add(drawnNumber);
   if (drawnNumbers.size < 5) continue;
 
-  const winningBoard = boardsWinningCombinations.find(
-    (boardWinningCombinations) =>
-      isBoardWinning(boardWinningCombinations, drawnNumbers)
-  );
+  let winningBoards = [];
+  let remainingBoards = [];
 
-  if (winningBoard) {
-    console.log(
-      computeUnmarkedNumbersSum(winningBoard, drawnNumbers) *
-        parseInt(drawnNumber, 10)
-    );
-    break;
+  for (const boardWinningCombinations of boardsWinningCombinations) {
+    if (isBoardWinning(boardWinningCombinations, drawnNumbers)) {
+      winningBoards.push(boardWinningCombinations);
+    } else {
+      remainingBoards.push(boardWinningCombinations);
+    }
   }
+
+  if (winningBoards.length > 0) {
+    lastWinningBoard = winningBoards[0];
+    lastWinningDrawnNumbers = new Set(drawnNumbers);
+    lastWinningDrawnNumber = drawnNumber;
+    boardsWinningCombinations = remainingBoards;
+  }
+
+  if (boardsWinningCombinations.length === 0) break;
 }
+
+console.log(
+  computeUnmarkedNumbersSum(lastWinningBoard, lastWinningDrawnNumbers) *
+    parseInt(lastWinningDrawnNumber, 10)
+);
