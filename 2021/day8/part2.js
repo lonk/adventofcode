@@ -68,9 +68,11 @@ const result = entries.reduce((acc, entry) => {
 
   const translationTable = computeTranslationTable(inputDigits);
 
-  const sortedOutput = output.split(' ').map(digits => translationTable.get(sortString(digits)));
+  const sortedOutput = output
+    .split(" ")
+    .map((digits) => translationTable.get(sortString(digits)));
 
-  return acc + parseInt(sortedOutput.join(''), 10);
+  return acc + parseInt(sortedOutput.join(""), 10);
 }, 0);
 
 console.log(result);
