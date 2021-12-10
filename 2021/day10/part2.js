@@ -50,5 +50,4 @@ for (const line of lines) {
   scores.push(score);
 }
 
-
 console.log(scores.sort((a, b) => b - a)[Math.floor(scores.length / 2)]);
