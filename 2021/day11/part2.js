@@ -29,8 +29,7 @@ for (const [y, line] of lines.entries()) {
   }
 }
 
-let totalFlashes = 0;
-for (let step = 0; step < 100; step += 1) {
+for (let step = 0; true; step += 1) {
   for (const [coordinates, power] of Array.from(map.entries())) {
     map.set(coordinates, power + 1);
   }
@@ -64,9 +63,11 @@ for (let step = 0; step < 100; step += 1) {
     }
   } while (!isCompleted);
 
-  totalFlashes += Array.from(map.values()).filter(
+  if (Array.from(map.values()).filter(
     (power) => power === 0
-  ).length;
+  ).length === map.size) {
+      console.log(step + 1);
+      break;
+  }
 }
 
-console.log(totalFlashes);
