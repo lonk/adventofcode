@@ -24,8 +24,8 @@ const map = new Map();
 for (const [y, line] of lines.entries()) {
   const heights = line.split("");
 
-  for (const [x, height] of heights.entries()) {
-    map.set(`${x},${y}`, parseInt(height, 10));
+  for (const [x, risk] of heights.entries()) {
+    map.set(`${x},${y}`, parseInt(risk, 10));
   }
 }
 
