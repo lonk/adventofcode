@@ -20,6 +20,7 @@ const computeElvesTotalCalories = () => {
     return elves;
 }
 
+// const oneLinerPart1 = Math.max(...data.split('\n\n').map(elf => elf.split('\n').reduce((acc, calories) => acc + parseInt(calories, 10), 0)));
 const part1 = () => {
     const elves = computeElvesTotalCalories();
 
